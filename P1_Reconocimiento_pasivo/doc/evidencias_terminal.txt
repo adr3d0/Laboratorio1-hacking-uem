@@ -1,0 +1,149 @@
+================================================================================
+EVIDENCIAS DE TERMINAL - Practica 1: Reconocimiento pasivo sobre MAPFRE, S.A.
+================================================================================
+
+--------------------------------------------------------------------------------
+[1] WHOIS del dominio principal
+--------------------------------------------------------------------------------
+
+┌──(adr3d0㉿adr3d0)-[~/Laboratorio1-hacking-uem/P1_Reconocimiento_pasivo/doc]
+└─$ whois mapfre.com
+   Domain Name: MAPFRE.COM
+   Registry Domain ID: 3203137_DOMAIN_COM-VRSN
+   Registrar WHOIS Server: whois.acens.net
+   Registrar URL: https://www.acens.com
+   Updated Date: 2026-03-16T04:23:07Z
+   Creation Date: 1996-03-16T05:00:00Z
+   Registry Expiry Date: 2027-03-17T04:00:00Z
+   Registrar: Acens Technologies, S.L.U.
+   Registrar IANA ID: 140
+   Registrar Abuse Contact Email: abuse@acens.net
+   Registrar Abuse Contact Phone: 91 141 85 83
+   Domain Status: clientTransferProhibited https://icann.org/epp#clientTransferProhibited
+   Name Server: ESDNS1.MAPFRE.NET
+   Name Server: ESDNS2.MAPFRE.NET
+   Name Server: ESDNS3.MAPFRE.NET
+   DNSSEC: unsigned
+   ...
+Domain Name: mapfre.com
+Registrant Organization: REDACTED FOR PRIVACY
+Registrant State/Province: MADRID
+Registrant Country: ES
+Name Server: esdns1.mapfre.net
+Name Server: esdns2.mapfre.net
+Name Server: esdns3.mapfre.net
+
+--------------------------------------------------------------------------------
+[2] Registros DNS (NS, MX, TXT, A)
+--------------------------------------------------------------------------------
+
+┌──(adr3d0㉿adr3d0)-[~/Laboratorio1-hacking-uem/P1_Reconocimiento_pasivo/doc]
+└─$ dig mapfre.com NS +short
+esdns3.mapfre.com.
+esdns1.mapfre.com.
+esdns2.mapfre.com.
+
+┌──(adr3d0㉿adr3d0)-[~/Laboratorio1-hacking-uem/P1_Reconocimiento_pasivo/doc]
+└─$ dig mapfre.com MX +short
+3 mapfre-com.mail.protection.outlook.com.
+
+┌──(adr3d0㉿adr3d0)-[~/Laboratorio1-hacking-uem/P1_Reconocimiento_pasivo/doc]
+└─$ dig mapfre.com TXT +short
+"v=spf1 include:mpfsr.com include:spf.mailjet.com -all"
+"apple-domain-verification=TVHRto6R57JiJHGS"
+"facebook-domain-verification=6j9iokaea1ghpmy4sif1evdez24342"
+"google-site-verification=7jjZBSPow94OhSAh3Uqoj-MYjZ2HR_dDS9Mptir4uG0"
+"google-site-verification=casLhtB83i0LZvRBslfzxtwOtRsXe0gZ5w1tT4lREts"
+"google-site-verification=ePPrA3N2Hah-ciNT53XFmDF5J5BKld6w_w__r6iCDwk"
+"Dynatrace-site-verification=1fa16c65-dda8-466d-a2fb-38c598156577__ve2vqvh6cjv7fu426hncjndk2o"
+"Dynatrace-site-verification=26a651c0-b997-47c5-8d6c-000e269db966__lli16m48n75vp5i2vvredu7vp0"
+"adobe-idp-site-verification=e0a9cd833464ea6fc60da43bef2b7df98161f1d623c29919de4500d9196d8611"
+"atlassian-domain-verification=++amhH4dI00pwCkjsyX68luFwS3TM8OK8mtHtf5FYqfJmvza1CKAEL99scnmOOXd"
+"MS=ms86044277"
+"_proofpoint-verification."
+(... registros adicionales de verificacion omitidos por brevedad ...)
+
+┌──(adr3d0㉿adr3d0)-[~/Laboratorio1-hacking-uem/P1_Reconocimiento_pasivo/doc]
+└─$ dig mapfre.com A +short
+54.171.208.217
+
+--------------------------------------------------------------------------------
+[3] Enumeracion de subdominios via Certificate Transparency (crt.sh)
+--------------------------------------------------------------------------------
+
+┌──(adr3d0㉿adr3d0)-[~/Laboratorio1-hacking-uem/P1_Reconocimiento_pasivo/doc]
+└─$ curl -s -w "\n---HTTP_CODE: %{http_code}---\n" "https://crt.sh/?q=%.mapfre.com&output=json" -o /tmp/crtsh_raw.json
+---HTTP_CODE: 503---
+
+┌──(adr3d0㉿adr3d0)-[~/Laboratorio1-hacking-uem/P1_Reconocimiento_pasivo/doc]
+└─$ cat /tmp/crtsh_raw.json
+Sorry, something went wrong... :-(
+Your request was terminated by the crt.sh database server after 26 seconds:
+FATAL: terminating connection due to conflict with recovery
+"Unfortunately, searches that would produce many results may never succeed."
+(Nota: la consulta con comodin %.mapfre.com satura la base de datos de crt.sh
+ debido al alto volumen historico de certificados del dominio.)
+
+┌──(adr3d0㉿adr3d0)-[~/Laboratorio1-hacking-uem/P1_Reconocimiento_pasivo/doc]
+└─$ curl -s --max-time 60 -w "\n---HTTP_CODE: %{http_code}---\n" "https://crt.sh/?q=mapfre.com&output=json" -o /tmp/crtsh_small.json
+---HTTP_CODE: 200---
+
+┌──(adr3d0㉿adr3d0)-[~/Laboratorio1-hacking-uem/P1_Reconocimiento_pasivo/doc]
+└─$ ls -la /tmp/crtsh_small.json
+-rw-rw-r-- 1 adr3d0 adr3d0 1791118 Jul  6 11:59 /tmp/crtsh_small.json
+
+┌──(adr3d0㉿adr3d0)-[~/Laboratorio1-hacking-uem/P1_Reconocimiento_pasivo/doc]
+└─$ head -c 500 /tmp/crtsh_small.json
+[{"issuer_ca_id":183267,"issuer_name":"C=US, O=Let's Encrypt, CN=R3",
+"common_name":"ephgaia.pro.devops.mapfre.com", ...
+"common_name":"tronlab.pro.devops.mapfre.com", ...}]
+
+┌──(adr3d0㉿adr3d0)-[~/Laboratorio1-hacking-uem/P1_Reconocimiento_pasivo/doc]
+└─$ python3 -c "
+import json
+with open('/tmp/crtsh_small.json') as f:
+    data = json.load(f)
+subs = set()
+for entry in data:
+    for line in entry['name_value'].split('\n'):
+        line = line.strip().lower()
+        if line.endswith('mapfre.com') and '*' not in line:
+            subs.add(line)
+for s in sorted(subs):
+    print(s)
+" | tee subdominios_crtsh.txt
+accesocertificado.mapfre.com
+ansible-tower.mapfre.com
+api-zeus.mapfre.com
+architecture.pre.devops.mapfre.com
+grafana.pro.devops.mapfre.com
+jenkins.tron.azure.mapfre.com
+kibana.pre.devops.mapfre.com
+mlops.atenea.app.br.aws.mapfre.com
+prometheus.pre.devops.mapfre.com
+securelogin.mapfre.com
+vdi.mapfre.com
+www.mapfre.com
+zeus.mapfre.com
+(... lista completa de 527 subdominios en subdominios_crtsh.txt ...)
+
+┌──(adr3d0㉿adr3d0)-[~/Laboratorio1-hacking-uem/P1_Reconocimiento_pasivo/doc]
+└─$ wc -l subdominios_crtsh.txt
+527 subdominios_crtsh.txt
+
+┌──(adr3d0㉿adr3d0)-[~/Laboratorio1-hacking-uem/P1_Reconocimiento_pasivo/doc]
+└─$ grep -oE '\.[a-z0-9-]+\.mapfre\.com$' subdominios_crtsh.txt | sort | uniq -c | sort -rn | head -20
+    196 .devops.mapfre.com
+     27 .aws.mapfre.com
+      5 .prenorambk.mapfre.com
+      5 .preeurasiabk.mapfre.com
+      5 .intnorambk.mapfre.com
+      5 .inteurasiabk.mapfre.com
+      5 .info.mapfre.com
+      4 .mail.mapfre.com
+      4 .ext.mapfre.com
+      4 .comunica.mapfre.com
+
+================================================================================
+FIN DE EVIDENCIAS (se ira ampliando con cada nuevo hallazgo)
+================================================================================
