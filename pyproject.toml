@@ -9,4 +9,5 @@ dependencies = []
 [tool.uv.workspace]
 members = [
     "P1_Reconocimiento_pasivo/src",
+    "P2_Reconocimiento_activo/src",
 ]

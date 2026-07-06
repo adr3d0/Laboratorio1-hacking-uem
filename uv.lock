@@ -5,6 +5,7 @@ requires-python = ">=3.13"
 [manifest]
 members = [
     "laboratorio1-hacking-uem",
+    "p2-reconocimiento-activo-src",
     "src",
 ]
 
@@ -98,6 +99,17 @@ version = "0.1.0"
 source = { virtual = "." }
 
 [[package]]
+name = "p2-reconocimiento-activo-src"
+version = "0.1.0"
+source = { virtual = "P2_Reconocimiento_activo/src" }
+dependencies = [
+    { name = "scapy" },
+]
+
+[package.metadata]
+requires-dist = [{ name = "scapy", specifier = ">=2.7.0" }]
+
+[[package]]
 name = "requests"
 version = "2.34.2"
 source = { registry = "https://pypi.org/simple" }
@@ -110,6 +122,15 @@ dependencies = [
 sdist = { url = "https://files.pythonhosted.org/packages/ac/c3/e2a2b89f2d3e2179abd6d00ebd70bff6273f37fb3e0cc209f48b39d00cbf/requests-2.34.2.tar.gz", hash = "sha256:f288924cae4e29463698d6d60bc6a4da69c89185ad1e0bcc4104f584e960b9ed", size = 142856, upload-time = "2026-05-14T19:25:27.735Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/a0/f4/c67b0b3f1b9245e8d266f0f112c500d50e5b4e83cb6f3b71b6528104182a/requests-2.34.2-py3-none-any.whl", hash = "sha256:2a0d60c172f83ac6ab31e4554906c0f3b3588d37b5cb939b1c061f4907e278e0", size = 73075, upload-time = "2026-05-14T19:25:26.443Z" },
+]
+
+[[package]]
+name = "scapy"
+version = "2.7.0"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/82/97/7caec64f05eae3d305d83e7cce1ef2f337710513b89efb334f7278202e79/scapy-2.7.0.tar.gz", hash = "sha256:bfc1ef1b93280aea1ddee53be7f74232aa28ac3d891244d41ee85200d24aa446", size = 2412897, upload-time = "2025-12-26T22:10:53.359Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/f0/6f/bd32e5e8adc391063858da17271bb444e4b009842cffa593bca8b2b78af7/scapy-2.7.0-py3-none-any.whl", hash = "sha256:eb22786da92be6fd8e5c694ae5595e4f5b9ac1f4364c9c45986844f3e3063561", size = 2590982, upload-time = "2025-12-26T22:07:48.941Z" },
 ]
 
 [[package]]
