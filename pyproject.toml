@@ -10,4 +10,5 @@ dependencies = []
 members = [
     "P1_Reconocimiento_pasivo/src",
     "P2_Reconocimiento_activo/src",
+    "P3_Mitm_y_suplantacion/src",
 ]

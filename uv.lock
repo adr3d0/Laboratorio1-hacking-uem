@@ -6,6 +6,7 @@ requires-python = ">=3.13"
 members = [
     "laboratorio1-hacking-uem",
     "p2-reconocimiento-activo-src",
+    "p3-mitm-y-suplantacion-src",
     "src",
 ]
 
@@ -102,6 +103,17 @@ source = { virtual = "." }
 name = "p2-reconocimiento-activo-src"
 version = "0.1.0"
 source = { virtual = "P2_Reconocimiento_activo/src" }
+dependencies = [
+    { name = "scapy" },
+]
+
+[package.metadata]
+requires-dist = [{ name = "scapy", specifier = ">=2.7.0" }]
+
+[[package]]
+name = "p3-mitm-y-suplantacion-src"
+version = "0.1.0"
+source = { virtual = "P3_Mitm_y_suplantacion/src" }
 dependencies = [
     { name = "scapy" },
 ]

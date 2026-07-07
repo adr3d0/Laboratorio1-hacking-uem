@@ -1,0 +1,28 @@
+services:
+  dns_server:
+    image: cytopia/bind:latest
+    container_name: p3-dns-server
+    networks:
+      lan_dns:
+        ipv4_address: 192.168.30.10
+    environment:
+      - DNS_A=lab.local=192.168.30.10, ns.lab.local=192.168.30.10, www.lab.local=192.168.30.10, mail.lab.local=192.168.30.10
+      - ALLOW_QUERY=192.168.30.0/24
+
+  dns_resolver:
+    image: cytopia/bind:latest
+    container_name: p3-dns-resolver
+    networks:
+      lan_dns:
+        ipv4_address: 192.168.30.20
+    volumes:
+      - ./bind-config/named.conf.resolver.full:/etc/bind/named.conf:ro
+    entrypoint: []
+    command: ["named", "-4", "-c", "/etc/bind/named.conf", "-u", "bind", "-f"]
+
+networks:
+  lan_dns:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 192.168.30.0/24

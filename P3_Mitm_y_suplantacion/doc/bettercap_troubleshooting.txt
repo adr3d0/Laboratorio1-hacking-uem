@@ -1,0 +1,39 @@
+================================================================================
+EVIDENCIA: Intento de uso de bettercap para ARP Spoofing - Practica 3
+================================================================================
+
+Se investigo y se intento usar bettercap v2.41.5 (ARM64) para realizar ARP
+spoofing contra el laboratorio Docker (victima 192.168.10.20, router
+192.168.10.2), tal como exige el enunciado.
+
+Tras multiples intentos (mas de 15 minutos de troubleshooting activo),
+bettercap presenta el error persistente "could not find spoof targets" de
+forma reproducible en este entorno, a pesar de:
+
+- Confirmar mediante 'net.probe on' que SI detecta ambos hosts
+  (endpoint.new events para 192.168.10.2 y 192.168.10.20)
+- Generar trafico ICMP continuo de fondo para mantener los hosts "vivos"
+- Limpiar la cache ARP de ambos extremos para forzar resolucion fresca
+- Reducir el periodo de refresco de net.recon a 1 segundo
+- Especificar los targets explicitamente en distintas combinaciones
+
+El patron observado es: bettercap detecta el host (evento "endpoint.new"),
+pero segundos despues lo pierde (evento "endpoint.lost") y vuelve a
+detectarlo en un ciclo repetido, sin llegar a mantenerlo el tiempo
+suficiente para que el modulo arp.spoof lo considere un target valido.
+
+Este comportamiento coincide con problemas reportados publicamente por
+otros usuarios de bettercap en entornos de red virtualizados/en contenedor
+(ver, por ejemplo, issues #1047, #979 y #942 del repositorio oficial de
+bettercap en GitHub), sin una solucion definitiva documentada por el
+proyecto a fecha de esta practica.
+
+Dado que la limitacion es de la propia herramienta y no del diseno del
+laboratorio (la conectividad de red ya se habia verificado como correcta
+mediante ping end-to-end antes de este intento), se opto por implementar
+el ARP spoofing directamente con scapy, empleando la misma tecnica
+subyacente (envio de respuestas ARP falsificadas) pero con control
+completo sobre el envio, evitando la capa de gestion de "hosts vivos" de
+bettercap que resulto ser la causa raiz del problema.
+
+================================================================================
